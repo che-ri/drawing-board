@@ -1,4 +1,5 @@
 const canvas = document.getElementById('jsCanvas');
+const colorBtns = document.getElementById('jsColors');
 let ctx = canvas.getContext('2d');
 
 //캔버스의 크기를 정의! (css 코드로는 적용안됨!!)
@@ -18,6 +19,11 @@ if (range) {
   range.addEventListener('change', changeRange);
 }
 
+function changeColor(e) {
+  const color = e.target.style.backgroundColor;
+  ctx.strokeStyle = color;
+}
+
 let painting = false; //기본 설정
 function stopPainting() {
   painting = false;
@@ -35,8 +41,11 @@ function onMouseMove(e) {
   if (!painting) {
     ctx.beginPath(); //path 생성
     ctx.moveTo(x, y); //움직임
+    //painting이 false일때도 움직이는 좌표를 생성해야되는 이유는,
+    //mousedown은 painting을 true로 만들지만, 이벤트 자체가 단발성이므로, 계속 이벤트가 일어날 수 없다.
+    //따라서, 계속적으로 이벤트를 만드는 mousemove로 좌표를 생성해주어야 한다!!
   } else {
-    ctx.lineTo(x, y); //line 생성
+    ctx.lineTo(x, y); //line이 생성
     ctx.stroke(); //현재 stroke의 스타일로 선을 그음
   }
 }
@@ -47,3 +56,5 @@ if (canvas) {
   canvas.addEventListener('mouseup', stopPainting);
   canvas.addEventListener('mouseleave', stopPainting);
 }
+
+colorBtns.addEventListener('click', changeColor);
