@@ -8,8 +8,10 @@ const INITIAL_COLOR = '#2c2c2c';
 const CANVAS_SIZE = 700;
 canvas.width = CANVAS_SIZE; //캔버스의 크기를 정의! (css 코드로는 적용안됨!!)
 canvas.height = CANVAS_SIZE;
-let painting = false; //기본 설정
+let painting = false;
 let filling = true;
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;
@@ -57,15 +59,15 @@ function onMouseMove(e) {
   const x = e.offsetX,
     y = e.offsetY;
 
-  if (!painting) {
+  if (painting & !filling) {
+    ctx.lineTo(x, y); //line이 생성
+    ctx.stroke(); //현재 stroke의 스타일로 선을 그음
+  } else {
     ctx.beginPath(); //path 생성
     ctx.moveTo(x, y); //움직임
     //painting이 false일때도 움직이는 좌표를 생성해야되는 이유는,
     //mousedown은 painting을 true로 만들지만, 이벤트 자체가 단발성이므로, 계속 이벤트가 일어날 수 없다.
     //따라서, 계속적으로 이벤트를 만드는 mousemove로 좌표를 생성해주어야 한다!!
-  } else {
-    ctx.lineTo(x, y); //line이 생성
-    ctx.stroke(); //현재 stroke의 스타일로 선을 그음
   }
 }
 
