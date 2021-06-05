@@ -1,7 +1,9 @@
 const canvas = document.getElementById('jsCanvas');
-const colorBtns = document.getElementById('jsColors');
+const ctx = canvas.getContext('2d');
+const range = document.getElementById('jsRange');
 const mode = document.getElementById('jsMode');
-let ctx = canvas.getContext('2d');
+const saveBtn = document.getElementById('jsSave');
+const colorBtns = document.getElementById('jsColors');
 
 //기본스타일
 const INITIAL_COLOR = '#2c2c2c';
@@ -17,7 +19,6 @@ ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;
 
 // 선의 굵기 조절
-let range = document.getElementById('jsRange');
 function changeRange() {
   ctx.lineWidth = range.value;
 }
@@ -35,7 +36,6 @@ function changeMode() {
     mode.innerText = 'Fill';
   }
 }
-
 if (mode) {
   mode.addEventListener('click', changeMode);
 }
@@ -54,8 +54,8 @@ function startPainting() {
   painting = true;
 }
 
-//마우스가 움직일 때마다 x와 y가 갱신되게 한다.
 function onMouseMove(e) {
+  //마우스가 움직일 때마다 x와 y 좌표가 갱신.
   const x = e.offsetX,
     y = e.offsetY;
 
@@ -75,12 +75,30 @@ function fillColor() {
   if (filling) ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 }
 
+//저장기능
+function handleSaveClick() {
+  const imageURL = canvas.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.href = imageURL;
+  link.download = '그림판🎨';
+  link.click();
+}
+if (saveBtn) {
+  saveBtn.addEventListener('click', handleSaveClick);
+}
+
+//오른쪽마우스 기능잠금
+function handleCM(e) {
+  e.preventDefault();
+}
+
 if (canvas) {
   canvas.addEventListener('mousemove', onMouseMove);
   canvas.addEventListener('mousedown', startPainting);
   canvas.addEventListener('mouseup', stopPainting);
   canvas.addEventListener('mouseleave', stopPainting);
   canvas.addEventListener('click', fillColor);
+  canvas.addEventListener('contextmenu', handleCM);
 }
 
 colorBtns.addEventListener('click', changeColor);
